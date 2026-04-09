@@ -1,9 +1,4 @@
 DS_store, 
 *node_modules, 
 .env,
-*.env,
-*package.json, 
-*package-lock.json,
-*tsconfig.json, 
-dist/, 
-target/
+tsconfig.json
