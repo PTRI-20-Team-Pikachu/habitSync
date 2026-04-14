@@ -18,16 +18,8 @@ app.use(cors({
   app.use(express.urlencoded({ extended: true }));
   app.use(express.static(path.resolve(__dirname, '../client/dist'))); 
 
-  315615261
-
-
-	
-
   app.use('/user', userRouter)
-
   app.use('/test', userRouter)
-
-
 
   //global error handler
   app.use( (err, req, res, next) => { // question for APC 
