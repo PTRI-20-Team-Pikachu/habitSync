@@ -1,5 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom';
-import AuthForm from '../components/auth/AuthForm';
+import { AuthForm } from '../components/auth/AuthForm';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -9,11 +9,28 @@ export default function SignupPage() {
   }
 
   return (
-    <section>
-      <AuthForm mode="signup" onSubmit={handleSignup} />
-      <p style={{ textAlign: 'center' }}>
-        Already have an account? <Link to="/">Login</Link>
-      </p>
-    </section>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: 'calc(100svh - 64px)',
+        gap: 16,
+      }}
+    >
+      <div style={{ width: '100%', maxWidth: 420 }}>
+        <AuthForm mode="signup" onSubmit={handleSignup} />
+        <p
+          className="font-pixel"
+          style={{ fontSize: 8, textAlign: 'center', color: 'var(--px-text-muted)', lineHeight: 2, marginTop: 16 }}
+        >
+          Have an account?{' '}
+          <Link to="/" style={{ color: 'var(--px-primary)', textDecoration: 'none' }}>
+            Login
+          </Link>
+        </p>
+      </div>
+    </div>
   );
 }
