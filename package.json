@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/PTRI-20-Team-Pikachu/habitSync#readme",
   "dependencies": {
-    "@supabase/supabase-js": "^2.103.0"
+    "@supabase/supabase-js": "^2.103.0",
+    "postgres": "^3.4.9"
   }
 }
