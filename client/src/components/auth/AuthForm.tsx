@@ -1,13 +1,14 @@
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 
 type AuthMode = 'login' | 'signup';
 
-type AuthFormProps = {
+interface AuthFormProps {
   mode: AuthMode;
   onSubmit?: (data: { email: string; password: string; username?: string }) => void;
-};
+}
 
-export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
+export function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const isSignup = mode === 'signup';
 
   const [username, setUsername] = useState('');
@@ -16,84 +17,77 @@ export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const payload = {
+    onSubmit?.({
       email: email.trim(),
       password: password.trim(),
       ...(isSignup ? { username: username.trim() } : {}),
-    };
-
-    onSubmit?.(payload);
+    });
   }
 
   return (
-    <form onSubmit={handleSubmit} style={formStyles.form}>
-      <h1>{isSignup ? 'Create Account' : 'Login'}</h1>
+    <form onSubmit={handleSubmit} className="px-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Header */}
+      <div style={{ borderBottom: '2px solid var(--px-border)', paddingBottom: 16 }}>
+        <h2
+          className="font-pixel"
+          style={{ fontSize: 12, color: 'var(--px-primary)', lineHeight: 1.8 }}
+        >
+          {isSignup ? '▶ JOIN QUEST' : '▶ LOGIN'}
+        </h2>
+        <p style={{ fontSize: 11, color: 'var(--px-text-muted)', marginTop: 6 }}>
+          {isSignup
+            ? 'Create your hero account'
+            : 'Continue your adventure'}
+        </p>
+      </div>
 
-      {isSignup && (
-        <label style={formStyles.label}>
-          Username
+      {/* Fields */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {isSignup && (
+          <div>
+            <label className="px-label" htmlFor="username">USERNAME</label>
+            <input
+              id="username"
+              type="text"
+              className="px-input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="HeroName123"
+              required
+            />
+          </div>
+        )}
+
+        <div>
+          <label className="px-label" htmlFor="email">EMAIL</label>
           <input
-            type="text"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            placeholder="Enter username"
-            style={formStyles.input}
+            id="email"
+            type="email"
+            className="px-input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="hero@example.com"
+            required
           />
-        </label>
-      )}
+        </div>
 
-      <label style={formStyles.label}>
-        Email
-        <input
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="Enter email"
-          style={formStyles.input}
-        />
-      </label>
+        <div>
+          <label className="px-label" htmlFor="password">PASSWORD</label>
+          <input
+            id="password"
+            type="password"
+            className="px-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
+        </div>
+      </div>
 
-      <label style={formStyles.label}>
-        Password
-        <input
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="Enter password"
-          style={formStyles.input}
-        />
-      </label>
-
-      <button type="submit" style={formStyles.button}>
-        {isSignup ? 'Sign Up' : 'Login'}
+      <button type="submit" className="px-btn px-btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+        {isSignup ? '⚔ CREATE HERO' : '▶ START QUEST'}
       </button>
     </form>
   );
 }
-
-const formStyles = {
-  form: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '12px',
-    maxWidth: '360px',
-    margin: '40px auto',
-    padding: '24px',
-    border: '1px solid black',
-  },
-  label: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '6px',
-  },
-  input: {
-    padding: '10px',
-    fontSize: '16px',
-  },
-  button: {
-    padding: '10px 14px',
-    fontSize: '16px',
-    cursor: 'pointer',
-  },
-};
