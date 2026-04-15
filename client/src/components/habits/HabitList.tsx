@@ -8,35 +8,36 @@ interface HabitListProps {
   onEditHabit: (id: string, values: UpdateHabitValues) => void;
 }
 
-export function HabitList({ habits, onToggleHabit, onDeleteHabit, onEditHabit }: HabitListProps) {
+export function HabitList({
+  habits,
+  onToggleHabit,
+  onDeleteHabit,
+  onEditHabit,
+}: HabitListProps) {
   if (habits.length === 0) {
     return (
-      <div
-        className="px-border"
-        style={{
-          background: 'var(--px-panel)',
-          padding: 40,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 16,
-        }}
-      >
-        <span style={{ fontSize: 48 }}>📜</span>
-        <p
-          className="font-pixel"
-          style={{ fontSize: 8, color: 'var(--px-text-muted)', textAlign: 'center', lineHeight: 2 }}
-        >
-          No quests yet.
-          <br />
-          Add your first habit above!
-        </p>
+      <div className="panel">
+        <div className="stack" style={{ alignItems: 'center', padding: '12px 0' }}>
+          <span style={{ fontSize: 48 }}>📜</span>
+          <p
+            className="font-pixel"
+            style={{
+              fontSize: 9,
+              textAlign: 'center',
+              color: 'var(--muted)',
+            }}
+          >
+            No quests yet.
+            <br />
+            Add your first quest above.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div className="quest-list">
       {habits.map((habit) => (
         <HabitCard
           key={habit.id}

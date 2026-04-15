@@ -23,7 +23,7 @@ export default function SignupPage() {
         <AuthForm mode="signup" onSubmit={handleSignup} />
         <p
           className="font-pixel"
-          style={{ fontSize: 8, textAlign: 'center', color: 'var(--px-text-muted)', lineHeight: 2, marginTop: 16 }}
+          style={{ fontSize: 12, textAlign: 'center', color: 'var(--px-text-muted)', lineHeight: 2, marginTop: 16 }}
         >
           Have an account?{' '}
           <Link to="/" style={{ color: 'var(--px-primary)', textDecoration: 'none' }}>
