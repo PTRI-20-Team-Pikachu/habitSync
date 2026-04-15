@@ -22,8 +22,7 @@ app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
 // ── Routes ──────────────────────────────────────────────────────────────────
 // app.use('/user', userRouter)
-app.use('/habits-api', habitRouter); 
-
+app.use('/habits-api', habitRouter); // I consider this change important because there are too many variables named habits.
 
 // Health check
 app.get('/health', (_req, res) => {
@@ -34,7 +33,6 @@ app.get("/{*splat}", (req, res) => {
   const filePath = path.join(__dirname, "../", "index.html")
   res.status(200).sendFile(filePath);
 });
-
 
 // ── Global Error Handler ─────────────────────────────────────────────────────
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

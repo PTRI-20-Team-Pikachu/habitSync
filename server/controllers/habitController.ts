@@ -4,7 +4,6 @@ import { supabase } from '../supabaseClient.ts';
 
 const habitController = {
   getAllHabits: async (req: Request, res: Response, next: NextFunction) => {
-    console.log('getting habits...')
     try {
       const { user_id } = req.query;
         if (!user_id || typeof user_id !== 'string') {
@@ -15,16 +14,8 @@ const habitController = {
         .select('*')
         .eq('user_id', user_id)
         .order('created_at', { ascending: false });
-  
-        if (error) {
-          return next({ 
-            log: error.message, 
-            status: 500, 
-            message: { err: error.message } 
-          });
-        }
-        console.log(data)
-        res.locals.habits = data
+        if (error) {return next({log: error.message,  status: 500, message: { err: error.message } });}
+        res.locals.habits = data;
         return next()
     } catch (err) {
       return next({
@@ -33,38 +24,30 @@ const habitController = {
         message: {err: 'error message'}
       });
     }
-    return next()
   },
-
-//   // GET /habits/:id
-//   getHabitById: async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const { id } = req.params;
-
-//       // TODO: replace with supabase query
-//       // const { data, error } = await supabase
-//       //   .from('habits')
-//       //   .select('*')
-//       //   .eq('id', id)
-//       //   .single();
-//       // if (error) return next({ log: error.message, status: 404, message: { err: 'Habit not found' } });
-//       // res.status(200).json(data);
-
-//       res.status(200).json({ id });
-//     } catch (err) {
-//       next(err);
-//     }
-//   },
-
-//   // POST /habits
-//   // Body: { user_id, title, goal, frequency }
+  getHabitById: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const { data, error } = await supabase
+        .from('habits')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (error) {return next({ log: error.message, status: 404, message: { err: 'Habit not found' } });}
+      res.locals.habitsById = data;
+      return next ()
+    } catch (err) {
+      next(err);
+    }
+    return  next({
+      log: 'error in getHabitById',
+      status: 500,
+      message: {err: 'error possibly bad id?'}
+    })
+  },
   createHabit: async (req: Request, res: Response, next: NextFunction) => {
-    console.log('1creating habits...')
-
     try {
       const { user_id, title, goal, frequency } = req.body;
-      console.log('2user_id' , user_id, "title", title)
-
       if (!user_id || !title || !goal || !frequency) {
         res.status(400).json({ error: 'user_id, title, goal, and frequency are required' });
         return;
@@ -73,32 +56,22 @@ const habitController = {
         res.status(400).json({ error: 'frequency must be "daily" or "weekly"' });
         return;
       }
-
-      console.log('3: about to hit supabase')
-      console.log('supabase url:', process.env.SUPABASE_URL)
       const { data, error } = await supabase
-      
         .from('habits')
-        
         .insert( { user_id, title, goal, frequency, completed: false })
         .select()
 
-        console.log('4: supa response',{data, error})
-      if (error) {return next({ log: error.message, status: 500, message: { err: error.message } });
-      ; }
+      if (error) { return next({ log: error.message, status: 500, message: { err: error.message } }); }
       res.locals.habit = data;
       return next();      
-      // res.status(201).json({ user_id, title, goal, frequency, completed: false });
     } catch (err) {
-      console.log('5: caught err')
       return next({
         log: 'error in postHabit',
         status: 400,
         message: {err: 'error message'}
       });
-
     }
-    }
+  },
   // },
 
 //   // PATCH /habits/:id
@@ -150,19 +123,20 @@ const habitController = {
 //   },
 
 //   // DELETE /habits/:id
-//   deleteHabit: async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const { id } = req.params;
+  deleteHabit: async (req: Request, res: Response, next: NextFunction) => {
+    try {
 
-//       // TODO: replace with supabase query
-//       // const { error } = await supabase.from('habits').delete().eq('id', id);
-//       // if (error) return next({ log: error.message, status: 404, message: { err: 'Habit not found' } });
+      console.log('are you logged in?  are you allowed to deelte?')
 
-//       res.status(204).send();
-//     } catch (err) {
-//       next(err);
-//     }
-//   },
+      const { id } = req.params;
+      const { error } = await supabase.from('habits').delete().eq('id', id);
+      if (error) return next({ log: error.message, status: 404, message: { err: 'Habit not found' } });
+
+      
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 export default habitController;
