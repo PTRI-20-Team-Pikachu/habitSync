@@ -1,6 +1,5 @@
-DS_store, 
-node_modules, 
-.env,
-package.json, 
-package-lock.json,
-tsconfig.json
+.DS_Store
+node_modules/
+.env
+dist/
+kill-ports.sh
