@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthForm } from '../components/auth/AuthForm';
+import { getSession } from '../features/auth/auth.api';
 
 const FEATURES = [
   { icon: '⚔', label: 'Track daily & weekly quests' },
@@ -10,6 +12,19 @@ const FEATURES = [
 
 export default function LoginPage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkExistingSession() {
+      try {
+        await getSession();
+        navigate('/dashboard');
+      } catch {
+        // No active session, stay on login page.
+      }
+    }
+
+    void checkExistingSession();
+  }, [navigate]);
 
   function handleLogin() {
     navigate('/dashboard');
