@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getSession } from "../db";
+import { getSession } from "../db/database";
 import { signJWT, verifyJWT } from "../utils/jwt.utils";
 
 // // #region agent log
