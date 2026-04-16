@@ -42,6 +42,8 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
             ? err.response.data
             : err.message || 'Authentication request failed.'
         );
+      } else if (err instanceof Error && err.message) {
+        setError(err.message);
       } else {
         setError('Authentication request failed.');
       }
