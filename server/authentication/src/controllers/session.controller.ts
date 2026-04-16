@@ -29,7 +29,7 @@ export function createSessionHandler(req: Request, res: Response) {
   });
 
   res.cookie("refreshToken", refreshToken, {
-    maxAge: 3.154e10, // 1 year
+    maxAge: 300000, // 1 year
     httpOnly: true,
   });
 
