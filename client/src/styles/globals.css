@@ -635,12 +635,10 @@ p {
 .pixel-quest-card {
   position: relative;
   background: #fffdf7;
-  border: 3px solid var(--line-dark);
+  border: none;
   box-shadow:
-    inset 0 0 0 2px var(--line-light),
-    inset 0 0 0 5px rgba(28, 167, 188, 0.75),
-    0 3px 0 rgba(0, 0, 0, 0.08);
-  padding: 14px 16px;
+    none;
+  padding: 0;
 }
 
 .quest-card::before,
@@ -681,7 +679,9 @@ p {
 .pixel-quest-goal {
   margin-top: 8px;
   margin-left: 40px;
-  font-size: 13px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  line-height: 1.8;
   color: var(--muted);
 }
 
@@ -928,14 +928,10 @@ p {
 }
 
 .quests-panel {
-  position: relative;
-  background: var(--paper);
-  border: 3px solid var(--line-dark);
-  box-shadow:
-    inset 0 0 0 2px var(--line-light),
-    inset 0 0 0 5px var(--line-dark),
-    0 4px 0 rgba(0, 0, 0, 0.08);
-  padding: 16px 16px 18px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .quests-panel::before {
@@ -943,13 +939,13 @@ p {
 }
 
 .quest-card {
+  position: relative;
   background: var(--paper);
   border: 3px solid var(--line-dark);
-  padding: 6px;
   box-shadow:
     inset 0 0 0 2px var(--line-light),
-    inset 0 0 0 5px var(--line-dark),
-    0 3px 0 rgba(0,0,0,0.08);
+    inset 0 0 0 4px rgba(28, 167, 188, 0.18);
+  padding: 16px 18px;
 }
 
 .quest-inner {
