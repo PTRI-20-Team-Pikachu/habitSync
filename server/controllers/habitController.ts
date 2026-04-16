@@ -72,11 +72,10 @@ const habitController = {
       });
     }
   },
-  // },
+  updateHabit: async (req: Request, res: Response, next: NextFunction) => {
 
-//   // PATCH /habits/:id
-//   // Body: { title?, goal?, frequency?, completed? }
-//   updateHabit: async (req: Request, res: Response, next: NextFunction) => {
+    console.log("update Habit? ran")
+    return next();
 //     try {
 //       const { id } = req.params;
 //       const updates = req.body as UpdateHabitBody;
@@ -100,10 +99,13 @@ const habitController = {
 //     } catch (err) {
 //       next(err);
 //     }
-//   },
+  },
 
 //   // PATCH /habits/:id/complete — toggles completed
-//   toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
+  toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
+    console.log("toggle ran")
+
+    return next();
 //     try {
 //       const { id } = req.params;
 
@@ -120,21 +122,18 @@ const habitController = {
 //     } catch (err) {
 //       next(err);
 //     }
-//   },
-
-//   // DELETE /habits/:id
+  },
   deleteHabit: async (req: Request, res: Response, next: NextFunction) => {
     try {
-
-      console.log('are you logged in?  are you allowed to deelte?')
+      console.log('are you logged in?  are you authorized to deelte?')
 
       const { id } = req.params;
       const { error } = await supabase.from('habits').delete().eq('id', id);
+
       if (error) return next({ log: error.message, status: 404, message: { err: 'Habit not found' } });
 
-      
     } catch (err) {
-      next(err);
+      return next(err);
     }
   },
 };

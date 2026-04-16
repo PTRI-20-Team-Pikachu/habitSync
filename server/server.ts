@@ -7,6 +7,8 @@ import cookieParser from 'cookie-parser';
 import habitRouter from './routers/habitRouter.ts';
 import userRouter from './routers/userRouter.ts';
 
+
+
 const __dirname = import.meta.dirname;
 const PORT = 3434;
 const app = express();
@@ -21,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
 // ── Routes ──────────────────────────────────────────────────────────────────
-// app.use('/user', userRouter)
+app.use('/users', userRouter)
 app.use('/habits-api', habitRouter); // I consider this change important because there are too many variables named habits.
 
 // Health check
