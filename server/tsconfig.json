@@ -5,6 +5,9 @@
     "target": "ESNext",
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "types": ["node"]
+    "types": ["node"],
+    "strict": false,
+    "skipLibCheck": true,
+    
   }
 }

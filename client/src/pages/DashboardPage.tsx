@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { HabitForm } from '../components/habits/HabitForm';
 import { HabitList } from '../components/habits/HabitList';
 import { PetStageCard } from '../components/pet/PetStageCard';
@@ -15,9 +16,16 @@ type HabitFormValues = {
   frequency: HabitFrequency;
 };
 
+interface LayoutContext {
+  xp: number;
+  setXp: React.Dispatch<React.SetStateAction<number>>;
+}
+
 const HABITS_STORAGE_KEY = 'habit-tracker-habits';
 
 export default function DashboardPage() {
+  const { setXp } = useOutletContext<LayoutContext>();
+
   const [habits, setHabits] = useState<Habit[]>(() => {
     try {
       const stored = localStorage.getItem(HABITS_STORAGE_KEY);
@@ -50,13 +58,25 @@ export default function DashboardPage() {
       frequency: values.frequency,
       completed: false,
     };
+
     setHabits((prev) => [newHabit, ...prev]);
   }
 
   function handleToggle(id: string) {
+    let xpDelta = 0;
+
     setHabits((prev) =>
-      prev.map((h) => (h.id === id ? { ...h, completed: !h.completed } : h))
+      prev.map((h) => {
+        if (h.id !== id) return h;
+
+        const newCompleted = !h.completed;
+        xpDelta = newCompleted ? 10 : -10;
+
+        return { ...h, completed: newCompleted };
+      })
     );
+
+    setXp((prevXp) => Math.max(prevXp + xpDelta, 0));
   }
 
   function handleDelete(id: string) {
@@ -65,65 +85,46 @@ export default function DashboardPage() {
 
   function handleEdit(id: string, values: UpdateHabitValues) {
     setHabits((prev) =>
-      prev.map((h) =>
-        h.id === id ? { ...h, ...values } : h
-      )
+      prev.map((h) => (h.id === id ? { ...h, ...values } : h))
     );
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-      {/* Page header */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <h1
-          className="font-pixel"
-          style={{ fontSize: 16, color: 'var(--px-heading)', lineHeight: 1.8 }}
-        >
-          ⚔ DASHBOARD
-        </h1>
-        <p
-          className="font-pixel"
-          style={{ fontSize: 8, color: 'var(--px-text-muted)', lineHeight: 2 }}
-        >
-          Today's quests — stay consistent, hero.
-        </p>
-      </div>
-
-      {/* Main grid */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '300px 1fr',
-          gap: 24,
-          alignItems: 'start',
-        }}
-      >
-        {/* Left column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <PetStageCard completedHabitsCount={completedCount} />
-          <ProgressSummary
-            totalHabits={habits.length}
-            completedHabits={completedCount}
-          />
+    <div className="page">
+      <div className="shell">
+        <div>
+          <h1 className="page-title font-pixel">DASHBOARD</h1>
+          <p className="page-subtitle font-pixel">
+            Today&apos;s quests — stay consistent, hero.
+          </p>
         </div>
 
-        {/* Right column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <HabitForm onCreateHabit={handleCreate} />
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <h2
-              className="font-pixel"
-              style={{ fontSize: 10, color: 'var(--px-heading)', lineHeight: 1.8 }}
-            >
-              YOUR QUESTS
-            </h2>
-            <HabitList
-              habits={habits}
-              onToggleHabit={handleToggle}
-              onDeleteHabit={handleDelete}
-              onEditHabit={handleEdit}
+        <div className="grid">
+          <div className="stack">
+            <PetStageCard completedHabitsCount={completedCount} />
+            <ProgressSummary
+              totalHabits={habits.length}
+              completedHabits={completedCount}
             />
+          </div>
+
+          <div className="stack">
+            <HabitForm onCreateHabit={handleCreate} />
+
+            <section className="quests-panel">
+              <div className="quest-section-head">
+                <span className="orb" />
+                <h2 className="panel-title">QUEST LOG</h2>
+                <span className="trail" />
+              </div>
+
+              <HabitList
+                habits={habits}
+                onToggleHabit={handleToggle}
+                onDeleteHabit={handleDelete}
+                onEditHabit={handleEdit}
+              />
+            </section>
           </div>
         </div>
       </div>
