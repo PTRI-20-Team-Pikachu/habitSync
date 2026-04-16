@@ -26,6 +26,7 @@ const habitController = {
     }
   },
   getHabitById: async (req: Request, res: Response, next: NextFunction) => {
+    //create habit type?
     try {
       const { id } = req.params;
       const { data, error } = await supabase

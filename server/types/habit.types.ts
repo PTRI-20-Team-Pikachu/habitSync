@@ -8,7 +8,7 @@ export type Habit = {
   goal: string;
   frequency: HabitFrequency;
   completed: boolean;
-  created_at?: string;
+  created_at?: Date;
 };
 
 export type CreateHabitBody = {
