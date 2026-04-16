@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-
+import axios from 'axios';
+import { login } from '../../features/auth/auth.api';
 type AuthMode = 'login' | 'signup';
 
 interface AuthFormProps {
   mode: AuthMode;
-  onSubmit?: (data: { email: string; password: string; username?: string }) => void;
+  onSubmit?: (data: { email: string; password: string; username?: string }) => void | Promise<void>;
 }
 
 export function AuthForm({ mode, onSubmit }: AuthFormProps) {
@@ -14,14 +15,39 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSubmit?.({
+    setIsSubmitting(true);
+    setError('');
+
+    const authData = {
       email: email.trim(),
       password: password.trim(),
       ...(isSignup ? { username: username.trim() } : {}),
-    });
+    };
+
+    try {
+      if (!isSignup) {
+        await login(authData.email, authData.password);
+      }
+
+      await onSubmit?.(authData);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(
+          typeof err.response?.data === 'string'
+            ? err.response.data
+            : err.message || 'Authentication request failed.'
+        );
+      } else {
+        setError('Authentication request failed.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -30,11 +56,11 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
       <div style={{ borderBottom: '2px solid var(--px-border)', paddingBottom: 16 }}>
         <h2
           className="font-pixel"
-          style={{ fontSize: 12, color: 'var(--px-primary)', lineHeight: 1.8 }}
+          style={{ fontSize: 17, color: 'var(--px-primary)', lineHeight: 1.8 }}
         >
           {isSignup ? '▶ JOIN QUEST' : '▶ LOGIN'}
         </h2>
-        <p style={{ fontSize: 11, color: 'var(--px-text-muted)', marginTop: 6 }}>
+        <p style={{ fontSize: 14, color: 'var(--px-text-muted)', marginTop: 6 }}>
           {isSignup
             ? 'Create your hero account'
             : 'Continue your adventure'}
@@ -45,7 +71,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {isSignup && (
           <div>
-            <label className="px-label" htmlFor="username">USERNAME</label>
+            <label className="px-label" htmlFor="username" style={{ fontSize: 8 }}>USERNAME</label>
             <input
               id="username"
               type="text"
@@ -59,7 +85,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
         )}
 
         <div>
-          <label className="px-label" htmlFor="email">EMAIL</label>
+          <label className="px-label" htmlFor="email" style={{ fontSize: 11 }}>EMAIL</label>
           <input
             id="email"
             type="email"
@@ -72,7 +98,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
         </div>
 
         <div>
-          <label className="px-label" htmlFor="password">PASSWORD</label>
+          <label className="px-label" htmlFor="password" style={{ fontSize: 11 }}>PASSWORD</label>
           <input
             id="password"
             type="password"
@@ -85,8 +111,19 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
         </div>
       </div>
 
-      <button type="submit" className="px-btn px-btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-        {isSignup ? '⚔ CREATE HERO' : '▶ START QUEST'}
+      {error && (
+        <p className="font-pixel" style={{ fontSize: 8, color: '#f87171', lineHeight: 2, margin: 0 }}>
+          {error}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        className="px-btn px-btn-primary"
+        style={{ width: '100%', justifyContent: 'center' }}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? '…' : isSignup ? '⚔ CREATE HERO' : '▶ START QUEST'}
       </button>
     </form>
   );

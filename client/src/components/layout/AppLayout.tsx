@@ -1,16 +1,47 @@
 import { Outlet } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Header } from './Header';
-import { useTheme } from '../../hooks/use-theme';
+
+const XP_STORAGE_KEY = 'habit-tracker-xp';
+const THEME_STORAGE_KEY = 'habit-tracker-theme';
+
+type LayoutContext = {
+  xp: number;
+  setXp: React.Dispatch<React.SetStateAction<number>>;
+};
 
 export default function AppLayout() {
-  const { theme, toggleTheme } = useTheme();
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY);
+    return stored === 'dark' ? 'dark' : 'light';
+  });
+
+  const [xp, setXp] = useState<number>(() => {
+    const stored = localStorage.getItem(XP_STORAGE_KEY);
+    return stored ? Number(stored) : 0;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(XP_STORAGE_KEY, String(xp));
+  }, [xp]);
+
+  useEffect(() => {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  function handleToggleTheme() {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }
 
   return (
-    <div style={{ minHeight: '100svh', background: 'var(--px-bg)' }}>
-      <Header theme={theme} onToggleTheme={toggleTheme} />
-      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 20px' }}>
-        <Outlet />
-      </main>
-    </div>
+    <>
+      <Header
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
+        xp={xp}
+      />
+      <Outlet context={{ xp, setXp } satisfies LayoutContext} />
+    </>
   );
 }
