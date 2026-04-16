@@ -1,10 +1,22 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthForm } from '../components/auth/AuthForm';
+import { signup } from '../features/auth/auth.api';
 
 export default function SignupPage() {
   const navigate = useNavigate();
 
-  function handleSignup() {
+  async function handleSignup(data: {
+    email: string;
+    password: string;
+    username?: string;
+  }) {
+    const userId = data.username?.trim();
+
+    if (!userId) {
+      throw new Error('Username is required');
+    }
+
+    await signup(userId, data.email, data.password);
     navigate('/dashboard');
   }
 
@@ -20,13 +32,22 @@ export default function SignupPage() {
       }}
     >
       <div style={{ width: '100%', maxWidth: 420 }}>
-        <AuthForm mode="signup" onSubmit={handleSignup} />
+        <AuthForm mode='signup' onSubmit={handleSignup} />
         <p
-          className="font-pixel"
-          style={{ fontSize: 12, textAlign: 'center', color: 'var(--px-text-muted)', lineHeight: 2, marginTop: 16 }}
+          className='font-pixel'
+          style={{
+            fontSize: 12,
+            textAlign: 'center',
+            color: 'var(--px-text-muted)',
+            lineHeight: 2,
+            marginTop: 16,
+          }}
         >
           Have an account?{' '}
-          <Link to="/" style={{ color: 'var(--px-primary)', textDecoration: 'none' }}>
+          <Link
+            to='/'
+            style={{ color: 'var(--px-primary)', textDecoration: 'none' }}
+          >
             Login
           </Link>
         </p>
