@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-
+import axios from 'axios';
+import { login } from '../../features/auth/auth.api';
 type AuthMode = 'login' | 'signup';
 
 interface AuthFormProps {
   mode: AuthMode;
-  onSubmit?: (data: { email: string; password: string; username?: string }) => void;
+  onSubmit?: (data: { email: string; password: string; username?: string }) => void | Promise<void>;
 }
 
 export function AuthForm({ mode, onSubmit }: AuthFormProps) {
@@ -14,14 +15,39 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    onSubmit?.({
+    setIsSubmitting(true);
+    setError('');
+
+    const authData = {
       email: email.trim(),
       password: password.trim(),
       ...(isSignup ? { username: username.trim() } : {}),
-    });
+    };
+
+    try {
+      if (!isSignup) {
+        await login(authData.email, authData.password);
+      }
+
+      await onSubmit?.(authData);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(
+          typeof err.response?.data === 'string'
+            ? err.response.data
+            : err.message || 'Authentication request failed.'
+        );
+      } else {
+        setError('Authentication request failed.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -85,8 +111,19 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
         </div>
       </div>
 
-      <button type="submit" className="px-btn px-btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-        {isSignup ? '⚔ CREATE HERO' : '▶ START QUEST'}
+      {error && (
+        <p className="font-pixel" style={{ fontSize: 8, color: '#f87171', lineHeight: 2, margin: 0 }}>
+          {error}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        className="px-btn px-btn-primary"
+        style={{ width: '100%', justifyContent: 'center' }}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? '…' : isSignup ? '⚔ CREATE HERO' : '▶ START QUEST'}
       </button>
     </form>
   );

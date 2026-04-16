@@ -1,37 +1,50 @@
 import express from 'express';
-import {Request, Response, NextFunction} from 'express'
+import { Request, Response, NextFunction } from 'express';
 import 'dotenv/config';
 import cors from 'cors';
 import path from 'path';
+import { existsSync } from 'fs';
 import cookieParser from 'cookie-parser';
 import habitRouter from './routers/habitRouter.ts';
+import authRoutes from './authentication/src/routes';
+import deserializeUser from './authentication/src/middleware/deserializeUser';
 import userRouter from './routers/userRouter.ts';
 
 const __dirname = import.meta.dirname;
 const PORT = 3434;
 const app = express();
+const clientDistPath = path.resolve(__dirname, '../client/dist');
+const clientIndexPath = path.join(clientDistPath, 'index.html');
 
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3434'], // Vite dev server
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'http://localhost:3434'], // Vite dev server
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.resolve(__dirname, '../client/dist')));
+app.use(express.static(clientDistPath));
+app.use(deserializeUser as any);
 
 // ── Routes ──────────────────────────────────────────────────────────────────
 // app.use('/user', userRouter)
 app.use('/habits-api', habitRouter); // I consider this change important because there are too many variables named habits.
+console.log('Authentication API Routes:');
+authRoutes(app as any);
 
 // Health check
 app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.get("/{*splat}", (req, res) => {
-  const filePath = path.join(__dirname, "../", "index.html")
-  res.status(200).sendFile(filePath);
+app.get('/{*splat}', (_req, res) => {
+  if (!existsSync(clientIndexPath)) {
+    return res.status(404).json({ err: 'Client build not found' });
+  }
+
+  return res.status(200).sendFile(clientIndexPath);
 });
 
 // ── Global Error Handler ─────────────────────────────────────────────────────
