@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 interface HeaderProps {
   theme: 'dark' | 'light';
   onToggleTheme: () => void;
+  xp: number;
 }
 
 const NAV_LINKS = [
@@ -11,96 +12,74 @@ const NAV_LINKS = [
   { to: '/', label: 'Login' },
 ];
 
-export function Header({ theme, onToggleTheme }: HeaderProps) {
+export function Header({ theme, onToggleTheme, xp }: HeaderProps) {
   const location = useLocation();
 
-  return (
-    <header
-      className="font-pixel"
-      style={{
-        background: 'var(--px-panel)',
-        borderBottom: '4px solid var(--px-border)',
-        boxShadow: '0 4px 0 var(--px-shadow)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-          padding: '0 20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 20,
-          height: 56,
-        }}
-      >
-        {/* Logo */}
-        <Link
-          to="/"
-          style={{
-            color: 'var(--px-primary)',
-            textDecoration: 'none',
-            fontSize: 11,
-            letterSpacing: '0.08em',
-            flexShrink: 0,
-          }}
-        >
-          ⚔ HABIT<span style={{ color: 'var(--px-gold)' }}>SYNC</span>
-        </Link>
+  const XP_PER_LEVEL = 1000;
+  const level = Math.floor(xp / XP_PER_LEVEL) + 1;
+  const currentLevelXp = xp % XP_PER_LEVEL;
+  const progressPercent = Math.min((currentLevelXp / XP_PER_LEVEL) * 100, 100);
 
-        {/* XP bar */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 7, color: 'var(--px-text-muted)', whiteSpace: 'nowrap' }}>
-            LVL 4
-          </span>
-          <div
-            className="px-xp-bar-track"
-            style={{ flex: 1, maxWidth: 200 }}
-            title="640 / 1000 XP"
-          >
-            <div className="px-xp-bar-fill" style={{ width: '64%' }} />
+  return (
+    <header className="top-hud font-pixel">
+      <div className="hud-row">
+        <div className="hud-left">
+          <Link to="/" className="hud-brand" style={{ textDecoration: 'none' }}>
+            <span>×</span>
+            <span className="hud-logo">
+              HABIT<span className="accent">SYNC</span>
+            </span>
+          </Link>
+
+          <span className="hud-meta">LVL {level}</span>
+
+          <div className="hud-bar-wrap">
+            <div
+              className="hud-bar"
+              title={`${currentLevelXp} / ${XP_PER_LEVEL} XP`}
+            >
+              <div
+                className="hud-bar-fill"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+
+            <span className="hud-xp">{xp} XP</span>
           </div>
-          <span style={{ fontSize: 7, color: 'var(--px-gold)', whiteSpace: 'nowrap' }}>
-            640 XP
-          </span>
         </div>
 
-        {/* Nav */}
-        <nav style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          {NAV_LINKS.map(({ to, label }) => (
-            <Link
-              key={to}
-              to={to}
-              style={{
-                fontSize: 8,
-                textDecoration: 'none',
-                color:
-                  location.pathname === to
-                    ? 'var(--px-primary)'
-                    : 'var(--px-text-muted)',
-                letterSpacing: '0.06em',
-                transition: 'color 0.15s',
-              }}
-            >
-              {label}
-            </Link>
-          ))}
+        <div className="hud-right">
+          <nav className="hud-links">
+            {NAV_LINKS.map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                style={{
+                  textDecoration: 'none',
+                  color:
+                    location.pathname === to
+                      ? 'var(--cyan-dark)'
+                      : 'var(--ink)',
+                }}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
 
-          {/* Theme toggle */}
           <button
             type="button"
             onClick={onToggleTheme}
-            className="px-btn px-btn-ghost"
-            style={{ fontSize: 10, padding: '6px 10px', border: '2px solid var(--px-border)' }}
+            className="btn-small"
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            style={{ background: 'var(--paper)' }}
           >
-            {theme === 'dark' ? '☀' : '🌙'}
+            {theme === 'dark' ? '☀' : '☾'}
           </button>
-        </nav>
+        </div>
       </div>
+
+      <div className="hud-bottom-line" />
     </header>
   );
 }

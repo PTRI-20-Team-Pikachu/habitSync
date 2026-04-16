@@ -56,11 +56,11 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
       <div style={{ borderBottom: '2px solid var(--px-border)', paddingBottom: 16 }}>
         <h2
           className="font-pixel"
-          style={{ fontSize: 12, color: 'var(--px-primary)', lineHeight: 1.8 }}
+          style={{ fontSize: 17, color: 'var(--px-primary)', lineHeight: 1.8 }}
         >
           {isSignup ? '▶ JOIN QUEST' : '▶ LOGIN'}
         </h2>
-        <p style={{ fontSize: 11, color: 'var(--px-text-muted)', marginTop: 6 }}>
+        <p style={{ fontSize: 14, color: 'var(--px-text-muted)', marginTop: 6 }}>
           {isSignup
             ? 'Create your hero account'
             : 'Continue your adventure'}
@@ -71,7 +71,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {isSignup && (
           <div>
-            <label className="px-label" htmlFor="username">USERNAME</label>
+            <label className="px-label" htmlFor="username" style={{ fontSize: 8 }}>USERNAME</label>
             <input
               id="username"
               type="text"
@@ -85,7 +85,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
         )}
 
         <div>
-          <label className="px-label" htmlFor="email">EMAIL</label>
+          <label className="px-label" htmlFor="email" style={{ fontSize: 11 }}>EMAIL</label>
           <input
             id="email"
             type="email"
@@ -98,7 +98,7 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
         </div>
 
         <div>
-          <label className="px-label" htmlFor="password">PASSWORD</label>
+          <label className="px-label" htmlFor="password" style={{ fontSize: 11 }}>PASSWORD</label>
           <input
             id="password"
             type="password"

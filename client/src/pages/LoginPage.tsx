@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthForm } from '../components/auth/AuthForm';
 import { getSession } from '../features/auth/auth.api';
+import tinyPupImg from '../assets/pet/tinyPup1.png';
 
 const FEATURES = [
   { icon: '⚔', label: 'Track daily & weekly quests' },
@@ -31,172 +32,79 @@ export default function LoginPage() {
   }
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 420px',
-        gap: 40,
-        minHeight: 'calc(100svh - 64px)',
-        alignItems: 'center',
-      }}
-    >
-      {/* ── Hero ─────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 32,
-          paddingRight: 20,
-        }}
-      >
-        {/* Title */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <h1
-            className="font-pixel"
-            style={{
-              fontSize: 28,
-              color: 'var(--px-primary)',
-              lineHeight: 1.5,
-              textShadow: '4px 4px 0 var(--px-shadow)',
-            }}
-          >
-            HABIT
-            <span style={{ color: 'var(--px-gold)' }}>SYNC</span>
-          </h1>
-          <p
-            className="font-pixel"
-            style={{
-              fontSize: 10,
-              color: 'var(--px-text-muted)',
-              lineHeight: 2,
-            }}
-          >
-            Level up your daily life.
-            <br />
-            One habit at a time.
-          </p>
-        </div>
+    <div className='login-page'>
+      <div className='login-shell'>
+        <section className='login-left'>
+          <div className='login-copy'>
+            <h1 className='login-title font-pixel'>
+              <span className='login-title-cyan'>HABIT</span>
+              <span className='login-title-gold'>SYNC</span>
+            </h1>
 
-        {/* Pixel pet hero */}
-        <div
-          className="px-border"
-          style={{
-            background: 'var(--px-panel)',
-            padding: 32,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 16,
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          <span
-            style={{
-              position: 'absolute',
-              top: 8,
-              left: 12,
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: 7,
-              color: 'var(--px-text-muted)',
-            }}
-          >
-            ★ PET COMPANION ★
-          </span>
-
-          <div
-            style={{
-              fontSize: 96,
-              lineHeight: 1,
-              filter: 'drop-shadow(4px 4px 0 rgba(0,0,0,0.4))',
-              marginTop: 16,
-            }}
-          >
-            🐶
+            <p className='login-subtitle font-pixel'>
+              Level up your daily life.
+              <br />
+              One habit at a time.
+            </p>
           </div>
 
-          <div
-            className="font-pixel"
-            style={{
-              fontSize: 8,
-              color: 'var(--px-gold)',
-              textAlign: 'center',
-              lineHeight: 2,
-            }}
-          >
-            TINY PUP
-          </div>
-
-          <div style={{ width: '100%', maxWidth: 200 }}>
+          <div className='login-pet-card panel'>
             <div
-              className="font-pixel"
-              style={{
-                fontSize: 7,
-                color: 'var(--px-text-muted)',
-                marginBottom: 4,
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
+              className='login-pet-label font-pixel'
+              style={{ fontSize: 13 }}
             >
-              <span>XP</span>
-              <span style={{ color: 'var(--px-gold)' }}>0 / 100</span>
+              PET COMPANION
             </div>
-            <div className="px-xp-bar-track">
-              <div className="px-xp-bar-fill" style={{ width: '0%' }} />
+
+            <img src={tinyPupImg} alt='Tiny Pup' className='login-pet-image' />
+
+            <div className='pet-name font-pixel'>TINY PUP</div>
+
+            <div className='login-pet-progress'>
+              <div className='login-pet-progress-head font-pixel'>
+                <span>XP</span>
+                <span>0 / 100</span>
+              </div>
+
+              <div className='progress-track'>
+                <div className='progress-fill' style={{ width: '0%' }} />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Features list */}
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {FEATURES.map(({ icon, label }) => (
-            <li
-              key={label}
-              className="font-pixel"
-              style={{
-                fontSize: 8,
-                color: 'var(--px-text)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                lineHeight: 2,
-              }}
-            >
-              <span
+          <div className='login-features'>
+            {FEATURES.map(({ icon, label }) => (
+              <div
+                key={label}
+                className='login-feature font-pixel'
                 style={{
-                  width: 28,
-                  height: 28,
-                  border: '2px solid var(--px-border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  fontSize: 14,
+                  fontSize: 12,
+                  color: 'var(--px-text)',
                 }}
               >
-                {icon}
-              </span>
-              {label}
-            </li>
-          ))}
-        </ul>
-      </div>
+                <span className='login-feature-icon'>{icon}</span>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      {/* ── Auth card ────────────────────────────────────────── */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <AuthForm mode="login" onSubmit={handleLogin} />
-        <p
-          className="font-pixel"
-          style={{ fontSize: 8, textAlign: 'center', color: 'var(--px-text-muted)', lineHeight: 2 }}
-        >
-          No account?{' '}
-          <Link
-            to="/signup"
-            style={{ color: 'var(--px-primary)', textDecoration: 'none' }}
-          >
-            Sign up
-          </Link>
-        </p>
+        <section className='login-right'>
+          <div className='login-auth-card panel'>
+            <AuthForm mode='login' onSubmit={handleLogin} />
+          </div>
+
+          <p className='login-signup font-pixel' style={{ fontSize: 13 }}>
+            No account?{' '}
+            <Link
+              to='/signup'
+              className='login-signup-link'
+              style={{ fontSize: 13 }}
+            >
+              Sign up
+            </Link>
+          </p>
+        </section>
       </div>
     </div>
   );
