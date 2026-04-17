@@ -30,7 +30,7 @@ export async function createSessionHandler(req: Request, res: Response) {
     // create access token
     const accessToken = signJWT(
       { email: user.email, name: user.user_id, sessionId: session.sessionId },
-      '5s',
+      '15m',
     );
 
     const refreshToken = signJWT({ sessionId: session.sessionId }, '1y');
@@ -111,8 +111,13 @@ export function deleteSessionHandler(req: Request, res: Response) {
     httpOnly: true,
   });
 
+  // invalidate only if session exists
   // @ts-ignore
-  const session = invalidateSession(req.user.sessionId);
+  if (req.user?.sessionId) {
+    // @ts-ignore
+    const session = invalidateSession(req.user.sessionId);
+    return res.send(session);
+  }
 
-  return res.send(session);
+  return res.status(200).send({ message: 'Logged out' });
 }

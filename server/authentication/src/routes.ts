@@ -16,7 +16,7 @@ function authRoutes(app: Express) {
 
   app.get('/api/session', requireUser, getSessionHandler);
   // logout
-  app.delete('/api/session', requireUser, deleteSessionHandler);
+  app.delete('/api/session', deleteSessionHandler);
 }
 
 export default authRoutes;

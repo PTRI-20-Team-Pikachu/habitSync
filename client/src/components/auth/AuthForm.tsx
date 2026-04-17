@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import axios from 'axios';
 import { login } from '../../features/auth/auth.api';
+import { useNavigate } from 'react-router-dom';
+
 type AuthMode = 'login' | 'signup';
 
 interface AuthFormProps {
@@ -18,39 +20,42 @@ export function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+   const navigate = useNavigate();
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setError('');
+  event.preventDefault();
+  setIsSubmitting(true);
+  setError('');
 
-    const authData = {
-      email: email.trim(),
-      password: password.trim(),
-      ...(isSignup ? { username: username.trim() } : {}),
-    };
+  const authData = {
+    email: email.trim(),
+    password: password.trim(),
+    ...(isSignup ? { username: username.trim() } : {}),
+  };
 
-    try {
-      if (!isSignup) {
-        await login(authData.email, authData.password);
-      }
-
-      await onSubmit?.(authData);
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(
-          typeof err.response?.data === 'string'
-            ? err.response.data
-            : err.message || 'Authentication request failed.'
-        );
-      } else if (err instanceof Error && err.message) {
-        setError(err.message);
-      } else {
-        setError('Authentication request failed.');
-      }
-    } finally {
-      setIsSubmitting(false);
+  try {
+    if (isSignup) {
+      await onSubmit?.(authData); // register
     }
+    await login(authData.email, authData.password); // always create session
+    navigate("/dashboard")
+
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      setError(
+        typeof err.response?.data === 'string'
+          ? err.response.data
+          : err.message || 'Authentication request failed.'
+      );
+    } else if (err instanceof Error && err.message) {
+      setError(err.message);
+    } else {
+      setError('Authentication request failed.');
+    }
+  } finally {
+    setIsSubmitting(false);
   }
+}
 
   return (
     <form onSubmit={handleSubmit} className="px-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>

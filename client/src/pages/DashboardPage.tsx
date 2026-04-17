@@ -4,6 +4,7 @@ import { HabitForm } from '../components/habits/HabitForm';
 import { HabitList } from '../components/habits/HabitList';
 import { PetStageCard } from '../components/pet/PetStageCard';
 import { ProgressSummary } from '../components/progress/ProgressSummary';
+import { getHabits, createHabit, deleteHabitRequest, toggleHabitRequest } from '../features/habits/habits.api';
 import type {
   Habit,
   HabitFrequency,
@@ -21,67 +22,79 @@ interface LayoutContext {
   setXp: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const HABITS_STORAGE_KEY = 'habit-tracker-habits';
+//const HABITS_STORAGE_KEY = 'habit-tracker-habits';
 
 export default function DashboardPage() {
   const { setXp } = useOutletContext<LayoutContext>();
 
-  const [habits, setHabits] = useState<Habit[]>(() => {
-    try {
-      const stored = localStorage.getItem(HABITS_STORAGE_KEY);
-      if (!stored) return [];
-      const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  });
+  const [habits, setHabits] = useState<Habit[]>([]);
 
   useEffect(() => {
+  async function loadHabits() {
     try {
-      localStorage.setItem(HABITS_STORAGE_KEY, JSON.stringify(habits));
+      const data = await getHabits();
+      setHabits(data);
     } catch (error) {
-      console.error('Failed to save habits:', error);
+      console.error('Failed to load habits:', error);
     }
-  }, [habits]);
+  }
+
+  loadHabits();
+}, []);
 
   const completedCount = useMemo(
     () => habits.filter((h) => h.completed).length,
     [habits]
   );
 
-  function handleCreate(values: HabitFormValues) {
-    const newHabit: Habit = {
-      id: crypto.randomUUID(),
+  async function handleCreate(values: HabitFormValues) {
+  try {
+    await createHabit({
       title: values.title,
       goal: values.goal,
       frequency: values.frequency,
-      completed: false,
-    };
+    });
 
-    setHabits((prev) => [newHabit, ...prev]);
+    const updatedHabits = await getHabits();
+    setHabits(updatedHabits);
+  } catch (error) {
+    console.error('Failed to create habit:', error);
   }
+}
 
-  function handleToggle(id: string) {
-    let xpDelta = 0;
+ async function handleToggle(id: string) {
+  let wasCompleted = false;
 
+  setHabits((prev) =>
+    prev.map((h) => {
+      if (h.id !== id) return h;
+      wasCompleted = h.completed;
+      return { ...h, completed: !h.completed };
+    })
+  );
+
+  try {
+    await toggleHabitRequest(id);
+  } catch (error) {
     setHabits((prev) =>
-      prev.map((h) => {
-        if (h.id !== id) return h;
-
-        const newCompleted = !h.completed;
-        xpDelta = newCompleted ? 10 : -10;
-
-        return { ...h, completed: newCompleted };
-      })
+      prev.map((h) =>
+        h.id === id ? { ...h, completed: wasCompleted } : h
+      )
     );
 
-    setXp((prevXp) => Math.max(prevXp + xpDelta, 0));
+    console.error('Failed to toggle habit:', error);
   }
+}
 
-  function handleDelete(id: string) {
-    setHabits((prev) => prev.filter((h) => h.id !== id));
+async function handleDelete(id: string) {
+  try {
+    await deleteHabitRequest(id);
+
+    setHabits(prev => prev.filter(h => h.id !== id));
+  } catch (error) {
+    console.error('Failed to delete habit:', error);
   }
+}
 
   function handleEdit(id: string, values: UpdateHabitValues) {
     setHabits((prev) =>

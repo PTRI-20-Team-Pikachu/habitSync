@@ -71,9 +71,9 @@ textarea {
   --ink: #f6e7d8;
   --muted: #cbb3b7;
 
-  --line-dark: #d79460;
-  --line-mid: #b49498;
-  --line-light: #5d4656;
+   --line-dark: #6aa7b0;
+  --line-mid: #7d8f9e;
+  --line-light: #4a4152;
 
   --cyan: #3f8b95;
   --cyan-2: #8fe8f0;
@@ -94,13 +94,12 @@ textarea {
 [data-theme='dark'] .top-hud,
 [data-theme='dark'] .pixel-panel,
 [data-theme='dark'] .px-panel,
-[data-theme='dark'] .quests-panel,
 [data-theme='dark'] .quest-card {
   background: var(--paper);
   box-shadow:
     inset 0 0 0 2px var(--line-light),
     inset 0 0 0 5px var(--line-dark),
-    0 4px 0 rgba(0, 0, 0, 0.35);
+    
 }
 
 [data-theme='dark'] .px-input {
@@ -114,7 +113,7 @@ textarea {
   box-shadow:
     inset 0 0 0 2px var(--line-light),
     inset 0 0 0 5px var(--line-dark),
-    0 0 12px rgba(83, 199, 214, 0.12);
+    
 }
 
 
@@ -1167,4 +1166,38 @@ p {
 .login-input {
   font-size: 12px;
   padding: 10px 12px;
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hud-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hud-user {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 2px solid var(--line-dark);
+  background: var(--paper);
+  font-size: 8px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hud-logout {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: var(--ink);
 }
