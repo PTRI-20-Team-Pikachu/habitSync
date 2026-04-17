@@ -47,6 +47,12 @@ export default function DashboardPage() {
     [habits]
   );
 
+  const derivedXp = completedCount * 10;
+
+  useEffect(() => {
+  setXp(completedCount * 10);
+}, [completedCount, setXp]);
+
   async function handleCreate(values: HabitFormValues) {
   try {
     await createHabit({

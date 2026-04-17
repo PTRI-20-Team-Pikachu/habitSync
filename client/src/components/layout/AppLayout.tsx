@@ -3,7 +3,7 @@ import { getSession, type SessionUser } from '../../features/auth/auth.api';
 import { useEffect, useState } from 'react';
 import { Header } from './Header';
 
-const XP_STORAGE_KEY = 'habit-tracker-xp';
+//const XP_STORAGE_KEY = 'habit-tracker-xp';
 const THEME_STORAGE_KEY = 'habit-tracker-theme';
 
 type LayoutContext = {
@@ -20,15 +20,12 @@ const navigate = useNavigate();
     return stored === 'dark' ? 'dark' : 'light';
   });
 
-  const [xp, setXp] = useState<number>(() => {
-    const stored = localStorage.getItem(XP_STORAGE_KEY);
-    return stored ? Number(stored) : 0;
-  });
+  const [xp, setXp] = useState<number>(0);
   const [currentUser, setCurrentUser] = useState<SessionUser | null>(null);
 
-  useEffect(() => {
-    localStorage.setItem(XP_STORAGE_KEY, String(xp));
-  }, [xp]);
+  // useEffect(() => {
+  //   localStorage.setItem(XP_STORAGE_KEY, String(xp));
+  // }, [xp]);
 
   useEffect(() => {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
@@ -42,6 +39,7 @@ const navigate = useNavigate();
       setCurrentUser(sessionUser);
     } catch {
       setCurrentUser(null);
+      setXp(0)
 
       if (location.pathname.startsWith('/dashboard')) {
         navigate('/', { replace: true });
