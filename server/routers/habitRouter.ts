@@ -19,6 +19,10 @@ habitRouter.post('/', requireUser, habitController.createHabit, (req, res) => {
 habitRouter.patch('/:id/complete', requireUser, habitController.toggleComplete, (req, res) => { res.status(200).json(res.locals.toggledHabit);
 });
 
+// habitRouter.patch('/:id', habitController.updateHabit, (req, res) =>{
+//     res.status(204).send({message: 'habit was updated'})
+// });
+
 // // PATCH /habits/:id/complete  — toggle completed
 // habitRouter.patch('/:id/complete', habitController.toggleComplete, (req, res) => {});
 

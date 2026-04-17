@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import type { CreateHabitBody, UpdateHabitBody } from '../types/habit.types.ts';
+import '../authentication/src/controllers/session.controller'
 import { supabase } from '../supabaseClient.ts';
 
 const habitController = {
@@ -148,8 +149,8 @@ toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
 },
 
 
-    console.log("update Habit? ran")
-    return next();
+    // console.log("update Habit? ran")
+    // return next();
 //     try {
 //       const { id } = req.params;
 //       const updates = req.body as UpdateHabitBody;
@@ -173,7 +174,7 @@ toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
 //     } catch (err) {
 //       next(err);
 //     }
-  },
+  // },
 
 //   // PATCH /habits/:id/complete — toggles completed
   toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
