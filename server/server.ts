@@ -31,8 +31,11 @@ app.use(express.static(clientDistPath));
 app.use(deserializeUser as any);
 
 // ── Routes ──────────────────────────────────────────────────────────────────
+
+app.use('/')
 app.use('/users', userRouter)
 app.use('/habits-api', habitRouter); // I consider this change important because there are too many variables named habits.
+
 console.log('Authentication API Routes:');
 authRoutes(app as any);
 
@@ -42,10 +45,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.get('/{*splat}', (_req, res) => {
-  if (!existsSync(clientIndexPath)) {
-    return res.status(404).json({ err: 'Client build not found' });
-  }
-
+  if (!existsSync(clientIndexPath)) {return res.status(404).json({ err: 'Client not found' });}
   return res.status(200).sendFile(clientIndexPath);
 });
 
