@@ -1,10 +1,8 @@
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthForm } from '../components/auth/AuthForm';
 import { signup } from '../features/auth/auth.api';
 
 export default function SignupPage() {
-  const navigate = useNavigate();
-
   async function handleSignup(data: {
     email: string;
     password: string;
@@ -17,7 +15,6 @@ export default function SignupPage() {
     }
 
     await signup(userId, data.email, data.password);
-    navigate('/dashboard');
   }
 
   return (

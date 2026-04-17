@@ -34,7 +34,7 @@ app.use(deserializeUser as any);
 
 app.use('/')
 app.use('/users', userRouter)
-app.use('/habits-api', habitRouter); // I consider this change important because there are too many variables named habits.
+app.use('/api/habits', habitRouter); // I consider this change important because there are too many variables named habits.
 
 console.log('Authentication API Routes:');
 authRoutes(app as any);

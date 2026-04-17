@@ -1,27 +1,28 @@
 import express from 'express';
 import habitController from '../controllers/habit.controller.ts';
+import { requireUser } from '../authentication/src/middleware/requireUser.ts';
 
 const habitRouter = express.Router();
 
-habitRouter.get('/', habitController.getAllHabits, (req, res) => {
+habitRouter.get('/', requireUser, habitController.getAllHabits, (req, res) => {
     res.status(200).json(res.locals.habits);
 });
-habitRouter.get('/:id', habitController.getHabitById, (req, res) => {
+habitRouter.get('/:id', requireUser, habitController.getHabitById, (req, res) => {
     res.status(200).json(res.locals.habitsById);
 });
 
-habitRouter.post('/', habitController.createHabit, (req, res) => {
+habitRouter.post('/', requireUser, habitController.createHabit, (req, res) => {
     res.status(201).json(res.locals.habit)
 });
 
-habitRouter.patch('/:id', habitController.updateHabit, (req, res) =>{
-    res.status(204).send({message: 'habit was updated'})
-});
-habitRouter.patch('/:id/complete', habitController.toggleComplete, (req, res) => {
-    res.status(200)
+// // PATCH /habits/:id           — update title/goal/frequency/completed
+habitRouter.patch('/:id/complete', requireUser, habitController.toggleComplete, (req, res) => { res.status(200).json(res.locals.toggledHabit);
 });
 
-habitRouter.delete('/:id', habitController.deleteHabit, (req, res) => {
+// // PATCH /habits/:id/complete  — toggle completed
+// habitRouter.patch('/:id/complete', habitController.toggleComplete, (req, res) => {});
+
+habitRouter.delete('/:id', requireUser, habitController.deleteHabit, (req, res) => {
     res.status(204).send({message:'habit was delted'});
 });
 
