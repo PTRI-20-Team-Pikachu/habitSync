@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { getSession } from "../db/database";
 import { signJWT, verifyJWT } from "../utils/jwt.utils";
 
-// #region agent log
-fetch('http://127.0.0.1:7605/ingest/fafc974b-3bd2-4fb5-8e13-b622295dc0a0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'dc4286'},body:JSON.stringify({sessionId:'dc4286',runId:'pre-fix-1',hypothesisId:'H3',location:'server/authentication/src/middleware/deserializeUser.ts:5',message:'deserializeUser module evaluated',data:{moduleLoaded:true},timestamp:Date.now()})}).catch(()=>{});
+// // #region agent log
+// fetch('http://127.0.0.1:7605/ingest/fafc974b-3bd2-4fb5-8e13-b622295dc0a0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'dc4286'},body:JSON.stringify({sessionId:'dc4286',runId:'pre-fix-1',hypothesisId:'H3',location:'server/authentication/src/middleware/deserializeUser.ts:5',message:'deserializeUser module evaluated',data:{moduleLoaded:true},timestamp:Date.now()})}).catch(()=>{});
 // #endregion
 
 function deserializeUser(req: Request, res: Response, next: NextFunction) {

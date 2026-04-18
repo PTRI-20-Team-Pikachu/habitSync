@@ -10,6 +10,8 @@ import authRoutes from './authentication/src/routes';
 import deserializeUser from './authentication/src/middleware/deserializeUser';
 import userRouter from './routers/userRouter.ts';
 
+
+
 const __dirname = import.meta.dirname;
 const PORT = 3434;
 const app = express();
@@ -29,9 +31,12 @@ app.use(express.static(clientDistPath));
 app.use(deserializeUser as any);
 
 // ── Routes ──────────────────────────────────────────────────────────────────
-// app.use('/user', userRouter)
+
+// app.use('/')
+app.use('/users', userRouter)
 app.use('/api/habits', habitRouter); // I consider this change important because there are too many variables named habits.
-console.log('Authentication API Routes:');
+
+// console.log('Authentication API Routes:');
 authRoutes(app as any);
 
 // Health check
@@ -40,10 +45,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.get('/{*splat}', (_req, res) => {
-  if (!existsSync(clientIndexPath)) {
-    return res.status(404).json({ err: 'Client build not found' });
-  }
-
+  if (!existsSync(clientIndexPath)) {return res.status(404).json({ err: 'Client not found' });}
   return res.status(200).sendFile(clientIndexPath);
 });
 
@@ -60,7 +62,7 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server listening on http://localhost:${PORT}`);
+  console.log(`Server listening on http://localhost:${PORT}`);
 });
 
 export default app;

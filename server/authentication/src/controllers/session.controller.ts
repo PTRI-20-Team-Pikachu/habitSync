@@ -41,10 +41,14 @@ export async function createSessionHandler(req: Request, res: Response) {
       httpOnly: true,
     });
 
-    res.cookie('refreshToken', refreshToken, {
-      maxAge: 3.154e10, // 1 year
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 300000, // 1 year
       httpOnly: true,
     });
+    // res.cookie('refreshToken', refreshToken, {
+    //   maxAge: 3.154e10, // 1 year
+    //   httpOnly: true,
+    // });
 
     // send user back
     return res.send(session);

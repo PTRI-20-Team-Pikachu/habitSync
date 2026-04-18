@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import type { CreateHabitBody, UpdateHabitBody } from '../types/habit.types.ts';
+import '../authentication/src/controllers/session.controller'
 import { supabase } from '../supabaseClient.ts';
 
 const habitController = {
@@ -42,6 +43,7 @@ const habitController = {
 },
 
   getHabitById: async (req: Request, res: Response, next: NextFunction) => {
+    //create habit type?
     try {
       const { id } = req.params;
       const { data, error } = await supabase
@@ -147,9 +149,8 @@ toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
 },
 
 
-//   // PATCH /habits/:id
-//   // Body: { title?, goal?, frequency?, completed? }
-//   updateHabit: async (req: Request, res: Response, next: NextFunction) => {
+    // console.log("update Habit? ran")
+    // return next();
 //     try {
 //       const { id } = req.params;
 //       const updates = req.body as UpdateHabitBody;
@@ -173,10 +174,13 @@ toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
 //     } catch (err) {
 //       next(err);
 //     }
-//   },
+  // },
 
 //   // PATCH /habits/:id/complete — toggles completed
-//   toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
+  toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
+    console.log("toggle ran")
+
+    return next();
 //     try {
 //       const { id } = req.params;
 
@@ -193,9 +197,7 @@ toggleComplete: async (req: Request, res: Response, next: NextFunction) => {
 //     } catch (err) {
 //       next(err);
 //     }
-//   },
-
-//   // DELETE /habits/:id
+  },
   deleteHabit: async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;

@@ -47,7 +47,7 @@ export default function DashboardPage() {
     [habits]
   );
 
-  const derivedXp = completedCount * 10;
+  // const derivedXp = completedCount * 10;
 
   useEffect(() => {
   setXp(completedCount * 10);
