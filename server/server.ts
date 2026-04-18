@@ -10,8 +10,6 @@ import authRoutes from './authentication/src/routes';
 import deserializeUser from './authentication/src/middleware/deserializeUser';
 import userRouter from './routers/userRouter.ts';
 
-
-
 const __dirname = import.meta.dirname;
 const PORT = 3434;
 const app = express();
@@ -20,7 +18,7 @@ const clientIndexPath = path.join(clientDistPath, 'index.html');
 
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:3434'], // Vite dev server
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3434'], // Vite dev server
     credentials: true,
   }),
 );
