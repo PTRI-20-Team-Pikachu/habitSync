@@ -32,11 +32,11 @@ app.use(deserializeUser as any);
 
 // ── Routes ──────────────────────────────────────────────────────────────────
 
-app.use('/')
+// app.use('/')
 app.use('/users', userRouter)
 app.use('/api/habits', habitRouter); // I consider this change important because there are too many variables named habits.
 
-console.log('Authentication API Routes:');
+// console.log('Authentication API Routes:');
 authRoutes(app as any);
 
 // Health check
@@ -62,7 +62,7 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server listening on http://localhost:${PORT}`);
+  console.log(`Server listening on http://localhost:${PORT}`);
 });
 
 export default app;
